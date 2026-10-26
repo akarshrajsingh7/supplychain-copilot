@@ -1,0 +1,123 @@
+import asyncio
+import json
+import logging
+from contextlib import asynccontextmanager
+from typing import Literal
+
+from fastapi import FastAPI, HTTPException, Request
+from fastapi.responses import StreamingResponse
+from langgraph.checkpoint.sqlite.aio import AsyncSqliteSaver
+from pydantic import BaseModel
+
+from backend.config import MEMORY_MODE, RUNTIME
+from backend.engine import IncidentEngine
+from backend.graph.graphiti_client import TemporalMemory
+
+logging.basicConfig(level=logging.INFO)
+logging.getLogger("neo4j.notifications").setLevel(logging.WARNING)
+
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    memory = TemporalMemory(MEMORY_MODE)
+    await memory.connect()
+    async with AsyncSqliteSaver.from_conn_string(str(RUNTIME / "checkpoints.sqlite")) as saver:
+        await saver.setup()
+        app.state.engine = IncidentEngine(memory, saver)
+        await app.state.engine.initialize()
+        app.state.task = None
+        yield
+        if app.state.task and not app.state.task.done():
+            app.state.task.cancel()
+            try:
+                await app.state.task
+            except asyncio.CancelledError:
+                pass
+    await memory.close()
+
+
+app = FastAPI(title="SupplyChain Copilot", lifespan=lifespan)
+
+
+@app.get("/api/health")
+def health(request: Request):
+    e = request.app.state.engine
+    return {"ok": True, "agent_mode": e.mode, "memory_mode": e.memory.mode, "graphiti_connected": e.memory.client is not None}
+
+
+@app.get("/api/state")
+def state(request: Request):
+    return request.app.state.engine.snapshot()
+
+
+@app.get("/api/graph")
+def graph(request: Request, view: Literal["before", "current"] = "current"):
+    return request.app.state.engine.graph_view(view == "before")
+
+
+@app.get("/api/memory")
+async def memory(request: Request, subject: str | None = None, as_of: str | None = None):
+    try:
+        return await request.app.state.engine.memory.search_graphiti_memory(subject=subject, as_of=as_of)
+    except ValueError as exc:
+        raise HTTPException(422, str(exc))
+
+
+@app.post("/api/incidents")
+async def inject(request: Request):
+    engine = request.app.state.engine
+    try:
+        await engine.inject()
+        request.app.state.task = asyncio.create_task(engine.run())
+        return engine.snapshot()
+    except ValueError as exc:
+        raise HTTPException(409, str(exc))
+
+
+class Decision(BaseModel):
+    decision: Literal["APPROVE", "REJECT"]
+
+
+@app.post("/api/decision")
+async def decision(body: Decision, request: Request):
+    try:
+        task = request.app.state.task
+        if task and not task.done():
+            await task  # Ensure the interrupt checkpoint has actually been persisted.
+        return await request.app.state.engine.decide(body.decision)
+    except ValueError as exc:
+        raise HTTPException(409, str(exc))
+
+
+@app.post("/api/reset")
+async def reset(request: Request):
+    engine = request.app.state.engine
+    async with engine.lock:
+        task = request.app.state.task
+        if task and not task.done():
+            raise HTTPException(409, "Investigation is still running")
+        engine.state = engine.fresh_state()
+        engine.save()
+        await engine.emit("System", "READY", "Healthy graph restored. Historical memory retained")
+    return engine.snapshot()
+
+
+@app.get("/api/events")
+async def events(request: Request):
+    engine = request.app.state.engine
+    queue = asyncio.Queue()
+    engine.listeners.add(queue)
+
+    async def stream():
+        try:
+            yield "data: " + json.dumps(engine.snapshot(), default=str) + "\n\n"
+            while not await request.is_disconnected():
+                try:
+                    snapshot = await asyncio.wait_for(queue.get(), 15)
+                    yield "data: " + json.dumps(snapshot, default=str) + "\n\n"
+                except asyncio.TimeoutError:
+                    yield ": heartbeat\n\n"
+        finally:
+            engine.listeners.discard(queue)
+
+    return StreamingResponse(stream(), media_type="text/event-stream", headers={"Cache-Control": "no-cache", "X-Accel-Buffering": "no"})

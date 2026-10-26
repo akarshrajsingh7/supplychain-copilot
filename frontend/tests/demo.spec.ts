@@ -1,0 +1,30 @@
+import {test,expect} from '@playwright/test';
+
+test('tariff → rejected plan → replan → human approval',async({page})=>{
+  const errors:string[]=[];
+  page.on('pageerror',error=>errors.push(error.message));
+  await page.request.post('/api/reset');
+  await page.goto('/');
+  await expect(page.getByRole('button',{name:'Inject Tariff Event',exact:true})).toBeEnabled();
+  await expect(page.getByText('68 entities',{exact:false})).toBeVisible();
+  await page.screenshot({path:'../docs/dashboard-healthy.png',fullPage:true});
+  await page.getByRole('button',{name:'Inject Tariff Event',exact:true}).click();
+  await expect(page.getByText('PLAN REJECTED',{exact:true})).toBeVisible({timeout:45000});
+  await expect(page.getByRole('button',{name:'Approve',exact:true})).toBeVisible({timeout:45000});
+  await expect(page.getByText('93.5%',{exact:true})).toBeVisible();
+  await page.screenshot({path:'../docs/dashboard-approval.png',fullPage:true});
+  await page.getByRole('button',{name:'Before disruption',exact:true}).click();
+  await expect(page.getByText('Temporal snapshot · 25 October 2026')).toBeVisible();
+  await page.getByRole('button',{name:'Current',exact:true}).click();
+  await page.getByRole('button',{name:'Approve',exact:true}).click();
+  await expect(page.getByText('✓ APPROVED · written to temporal memory')).toBeVisible({timeout:20000});
+  await page.screenshot({path:'../docs/dashboard-approved.png',fullPage:true});
+  await page.getByRole('button',{name:'Inspect orders'}).click();
+  await expect(page.getByText('Entity inspector',{exact:true})).toBeVisible();
+  await page.getByRole('button',{name:'Close inspector'}).click();
+  await expect(page.getByText('✓ APPROVED · written to temporal memory')).toBeVisible();
+  await page.setViewportSize({width:390,height:844});
+  await page.screenshot({path:'../docs/dashboard-mobile.png',fullPage:true});
+  expect(errors).toEqual([]);
+  expect(await page.evaluate(()=>document.documentElement.scrollWidth<=window.innerWidth)).toBeTruthy();
+});

@@ -1,0 +1,11 @@
+{
+  "id": "tariff-2026-11",
+  "name": "Semiconductor tariff \u00b7 25%",
+  "simulated": true,
+  "country": "CN",
+  "hs_code": "8542",
+  "rate": 0.25,
+  "reference_time": "2026-10-26T09:00:00Z",
+  "effective_at": "2026-11-15T00:00:00Z",
+  "description": "SIMULATED: A 25% tariff on HS 8542 integrated circuits imported from China takes effect November 15, 2026."
+}

@@ -1,0 +1,7 @@
+export type Entity = {id:string;name:string;type:string;attributes:Record<string,unknown>;risk:string;evidence?:Record<string,unknown>[]};
+export type Edge = {id:string;source:string;target:string;predicate:string;attributes:Record<string,unknown>};
+export type Graph = {nodes:Entity[];edges:Edge[]};
+export type Activity = {id:number;time:string;agent:string;stage:string;message:string;data:Record<string,unknown>;nodes:string[];risk:string|null};
+export type Evaluation = {accepted:boolean;violations:string[];baseline_cost:number;plan_cost:number;incremental_cost:number;savings:number;baseline_tariff:number;residual_tariff:number;exposure_reduction:number;orders_protected:number;order_value_protected:number;residual_risk:string[];capacity_checks?:{supplier:string;requested:number;available:number;feasible:boolean}[]};
+export type Allocation = {supplier:string;component:string;quantity:number;expedited:boolean};
+export type State = {run_id:string;trace_url:string|null;status:string;events:Activity[];mode:string;memory_mode:string;memory_warning:string|null;simulated:boolean;tariff:{description:string};impact:null|{direct:string[];downstream:string[];order_value:number;tariff:number;orders:string[];products:string[]};inventory:null|{components:{component:string;demand:number;inventory:number;incoming:number;shortfall:number}[];priority_reservations:{component:string;order:string;quantity:number}[]};plan:null|{id:string;title:string;allocations:Allocation[]};evaluation:Evaluation|null;rejection:Evaluation|null;verified:boolean;error:string|null};

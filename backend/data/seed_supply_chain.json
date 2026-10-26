@@ -1,0 +1,1684 @@
+{
+  "nodes": [
+    {
+      "id": "CN",
+      "name": "China",
+      "type": "Country",
+      "attributes": {}
+    },
+    {
+      "id": "TW",
+      "name": "Taiwan",
+      "type": "Country",
+      "attributes": {}
+    },
+    {
+      "id": "VN",
+      "name": "Vietnam",
+      "type": "Country",
+      "attributes": {}
+    },
+    {
+      "id": "DE",
+      "name": "Germany",
+      "type": "Country",
+      "attributes": {}
+    },
+    {
+      "id": "8542",
+      "name": "HS 8542",
+      "type": "HSCode",
+      "attributes": {
+        "category": "Integrated circuits"
+      }
+    },
+    {
+      "id": "8532",
+      "name": "HS 8532",
+      "type": "HSCode",
+      "attributes": {
+        "category": "Capacitors"
+      }
+    },
+    {
+      "id": "8504",
+      "name": "HS 8504",
+      "type": "HSCode",
+      "attributes": {
+        "category": "Power supplies"
+      }
+    },
+    {
+      "id": "8473",
+      "name": "HS 8473",
+      "type": "HSCode",
+      "attributes": {
+        "category": "Electronics parts"
+      }
+    },
+    {
+      "id": "A",
+      "name": "Shenzhen Micro",
+      "type": "Supplier",
+      "attributes": {
+        "country": "CN",
+        "monthly_capacity": 8000,
+        "available_capacity": 8000,
+        "lead_days": 12,
+        "currency": "EUR",
+        "qualified": true,
+        "pre_tariff_capacity": 800,
+        "expedite_lead_days": 4,
+        "booked_arrival": "2026-11-17T00:00:00+00:00"
+      }
+    },
+    {
+      "id": "cap-A",
+      "name": "8,000 spare / month",
+      "type": "Capacity",
+      "attributes": {
+        "available": 8000,
+        "period": "November 2026"
+      }
+    },
+    {
+      "id": "B",
+      "name": "Formosa Silicon",
+      "type": "Supplier",
+      "attributes": {
+        "country": "TW",
+        "monthly_capacity": 6000,
+        "available_capacity": 2000,
+        "lead_days": 14,
+        "currency": "EUR",
+        "qualified": true,
+        "pre_tariff_capacity": 0,
+        "expedite_lead_days": 4,
+        "booked_arrival": null
+      }
+    },
+    {
+      "id": "cap-B",
+      "name": "2,000 spare / month",
+      "type": "Capacity",
+      "attributes": {
+        "available": 2000,
+        "period": "November 2026"
+      }
+    },
+    {
+      "id": "C",
+      "name": "VietCore Electronics",
+      "type": "Supplier",
+      "attributes": {
+        "country": "VN",
+        "monthly_capacity": 5000,
+        "available_capacity": 1400,
+        "lead_days": 10,
+        "currency": "EUR",
+        "qualified": true,
+        "pre_tariff_capacity": 0,
+        "expedite_lead_days": 4,
+        "booked_arrival": null
+      }
+    },
+    {
+      "id": "cap-C",
+      "name": "1,400 spare / month",
+      "type": "Capacity",
+      "attributes": {
+        "available": 1400,
+        "period": "November 2026"
+      }
+    },
+    {
+      "id": "D",
+      "name": "Suzhou Logic",
+      "type": "Supplier",
+      "attributes": {
+        "country": "CN",
+        "monthly_capacity": 7000,
+        "available_capacity": 5000,
+        "lead_days": 12,
+        "currency": "EUR",
+        "qualified": true,
+        "pre_tariff_capacity": 0,
+        "expedite_lead_days": 4,
+        "booked_arrival": "2026-11-17T00:00:00+00:00"
+      }
+    },
+    {
+      "id": "cap-D",
+      "name": "5,000 spare / month",
+      "type": "Capacity",
+      "attributes": {
+        "available": 5000,
+        "period": "November 2026"
+      }
+    },
+    {
+      "id": "E",
+      "name": "Rhein Power",
+      "type": "Supplier",
+      "attributes": {
+        "country": "DE",
+        "monthly_capacity": 9000,
+        "available_capacity": 6000,
+        "lead_days": 4,
+        "currency": "EUR",
+        "qualified": true,
+        "pre_tariff_capacity": 0,
+        "expedite_lead_days": 4,
+        "booked_arrival": null
+      }
+    },
+    {
+      "id": "cap-E",
+      "name": "6,000 spare / month",
+      "type": "Capacity",
+      "attributes": {
+        "available": 6000,
+        "period": "November 2026"
+      }
+    },
+    {
+      "id": "F",
+      "name": "Hanoi Passives",
+      "type": "Supplier",
+      "attributes": {
+        "country": "VN",
+        "monthly_capacity": 15000,
+        "available_capacity": 10000,
+        "lead_days": 8,
+        "currency": "EUR",
+        "qualified": true,
+        "pre_tariff_capacity": 0,
+        "expedite_lead_days": 4,
+        "booked_arrival": null
+      }
+    },
+    {
+      "id": "cap-F",
+      "name": "10,000 spare / month",
+      "type": "Capacity",
+      "attributes": {
+        "available": 10000,
+        "period": "November 2026"
+      }
+    },
+    {
+      "id": "G",
+      "name": "Taipei Precision",
+      "type": "Supplier",
+      "attributes": {
+        "country": "TW",
+        "monthly_capacity": 8000,
+        "available_capacity": 5000,
+        "lead_days": 9,
+        "currency": "EUR",
+        "qualified": true,
+        "pre_tariff_capacity": 0,
+        "expedite_lead_days": 4,
+        "booked_arrival": null
+      }
+    },
+    {
+      "id": "cap-G",
+      "name": "5,000 spare / month",
+      "type": "Capacity",
+      "attributes": {
+        "available": 5000,
+        "period": "November 2026"
+      }
+    },
+    {
+      "id": "H",
+      "name": "Bavaria Assemblies",
+      "type": "Supplier",
+      "attributes": {
+        "country": "DE",
+        "monthly_capacity": 12000,
+        "available_capacity": 9000,
+        "lead_days": 3,
+        "currency": "EUR",
+        "qualified": true,
+        "pre_tariff_capacity": 0,
+        "expedite_lead_days": 4,
+        "booked_arrival": null
+      }
+    },
+    {
+      "id": "cap-H",
+      "name": "9,000 spare / month",
+      "type": "Capacity",
+      "attributes": {
+        "available": 9000,
+        "period": "November 2026"
+      }
+    },
+    {
+      "id": "shenzhen",
+      "name": "Shenzhen",
+      "type": "Port",
+      "attributes": {
+        "delay_days": 0,
+        "risk": "normal"
+      }
+    },
+    {
+      "id": "kaohsiung",
+      "name": "Kaohsiung",
+      "type": "Port",
+      "attributes": {
+        "delay_days": 3,
+        "risk": "congested"
+      }
+    },
+    {
+      "id": "haiphong",
+      "name": "Hai Phong",
+      "type": "Port",
+      "attributes": {
+        "delay_days": 1,
+        "risk": "congested"
+      }
+    },
+    {
+      "id": "hamburg",
+      "name": "Hamburg",
+      "type": "Port",
+      "attributes": {
+        "delay_days": 0,
+        "risk": "normal"
+      }
+    },
+    {
+      "id": "route-0",
+      "name": "Shenzhen \u2192 Hamburg",
+      "type": "Route",
+      "attributes": {}
+    },
+    {
+      "id": "route-1",
+      "name": "Kaohsiung \u2192 Hamburg",
+      "type": "Route",
+      "attributes": {}
+    },
+    {
+      "id": "route-2",
+      "name": "Haiphong \u2192 Hamburg",
+      "type": "Route",
+      "attributes": {}
+    },
+    {
+      "id": "mcu",
+      "name": "MCU \u00b7 X7",
+      "type": "Component",
+      "attributes": {
+        "hs_code": "8542",
+        "currency": "EUR"
+      }
+    },
+    {
+      "id": "pmic",
+      "name": "Power IC \u00b7 P4",
+      "type": "Component",
+      "attributes": {
+        "hs_code": "8542",
+        "currency": "EUR"
+      }
+    },
+    {
+      "id": "radio",
+      "name": "Radio module",
+      "type": "Component",
+      "attributes": {
+        "hs_code": "8473",
+        "currency": "EUR"
+      }
+    },
+    {
+      "id": "sensor",
+      "name": "Optical sensor",
+      "type": "Component",
+      "attributes": {
+        "hs_code": "8473",
+        "currency": "EUR"
+      }
+    },
+    {
+      "id": "cap",
+      "name": "Ceramic capacitor",
+      "type": "Component",
+      "attributes": {
+        "hs_code": "8532",
+        "currency": "EUR"
+      }
+    },
+    {
+      "id": "psu",
+      "name": "Power supply",
+      "type": "Component",
+      "attributes": {
+        "hs_code": "8504",
+        "currency": "EUR"
+      }
+    },
+    {
+      "id": "pcb",
+      "name": "Mainboard",
+      "type": "Component",
+      "attributes": {
+        "hs_code": "8473",
+        "currency": "EUR"
+      }
+    },
+    {
+      "id": "case",
+      "name": "Enclosure",
+      "type": "Component",
+      "attributes": {
+        "hs_code": "8473",
+        "currency": "EUR"
+      }
+    },
+    {
+      "id": "screen",
+      "name": "OLED display",
+      "type": "Component",
+      "attributes": {
+        "hs_code": "8473",
+        "currency": "EUR"
+      }
+    },
+    {
+      "id": "cable",
+      "name": "Cable harness",
+      "type": "Component",
+      "attributes": {
+        "hs_code": "8473",
+        "currency": "EUR"
+      }
+    },
+    {
+      "id": "fan",
+      "name": "Cooling assembly",
+      "type": "Component",
+      "attributes": {
+        "hs_code": "8473",
+        "currency": "EUR"
+      }
+    },
+    {
+      "id": "connector",
+      "name": "I/O connector",
+      "type": "Component",
+      "attributes": {
+        "hs_code": "8473",
+        "currency": "EUR"
+      }
+    },
+    {
+      "id": "plant-0",
+      "name": "Berlin Assembly",
+      "type": "Plant",
+      "attributes": {
+        "country": "DE"
+      }
+    },
+    {
+      "id": "plant-1",
+      "name": "Dresden Assembly",
+      "type": "Plant",
+      "attributes": {
+        "country": "DE"
+      }
+    },
+    {
+      "id": "wh-0",
+      "name": "Berlin Hub",
+      "type": "Warehouse",
+      "attributes": {
+        "country": "DE"
+      }
+    },
+    {
+      "id": "wh-1",
+      "name": "Hamburg Hub",
+      "type": "Warehouse",
+      "attributes": {
+        "country": "DE"
+      }
+    },
+    {
+      "id": "wh-2",
+      "name": "Dresden Hub",
+      "type": "Warehouse",
+      "attributes": {
+        "country": "DE"
+      }
+    },
+    {
+      "id": "gateway",
+      "name": "Edge Gateway",
+      "type": "Product",
+      "attributes": {
+        "gross_margin": 0.34
+      }
+    },
+    {
+      "id": "controller",
+      "name": "Smart Controller",
+      "type": "Product",
+      "attributes": {
+        "gross_margin": 0.41
+      }
+    },
+    {
+      "id": "monitor",
+      "name": "Vision Monitor",
+      "type": "Product",
+      "attributes": {
+        "gross_margin": 0.38
+      }
+    },
+    {
+      "id": "hub",
+      "name": "Connect Hub",
+      "type": "Product",
+      "attributes": {
+        "gross_margin": 0.29
+      }
+    },
+    {
+      "id": "power",
+      "name": "Power Station",
+      "type": "Product",
+      "attributes": {
+        "gross_margin": 0.26
+      }
+    },
+    {
+      "id": "customer-0",
+      "name": "Atlas Systems",
+      "type": "Customer",
+      "attributes": {}
+    },
+    {
+      "id": "customer-1",
+      "name": "Northstar Labs",
+      "type": "Customer",
+      "attributes": {}
+    },
+    {
+      "id": "customer-2",
+      "name": "Helix Industrial",
+      "type": "Customer",
+      "attributes": {}
+    },
+    {
+      "id": "customer-3",
+      "name": "Nova Retail",
+      "type": "Customer",
+      "attributes": {}
+    },
+    {
+      "id": "customer-4",
+      "name": "Orbit Health",
+      "type": "Customer",
+      "attributes": {}
+    },
+    {
+      "id": "order-0",
+      "name": "SO-4100",
+      "type": "Order",
+      "attributes": {
+        "quantity": 575,
+        "order_value": 69000,
+        "deadline": "2026-11-25",
+        "gross_margin": 0.34,
+        "production_days": 3
+      }
+    },
+    {
+      "id": "order-1",
+      "name": "SO-4101",
+      "type": "Order",
+      "attributes": {
+        "quantity": 575,
+        "order_value": 71875,
+        "deadline": "2026-11-26",
+        "gross_margin": 0.41,
+        "production_days": 3
+      }
+    },
+    {
+      "id": "order-2",
+      "name": "SO-4102",
+      "type": "Order",
+      "attributes": {
+        "quantity": 575,
+        "order_value": 74750,
+        "deadline": "2026-11-27",
+        "gross_margin": 0.38,
+        "production_days": 3
+      }
+    },
+    {
+      "id": "order-3",
+      "name": "SO-4103",
+      "type": "Order",
+      "attributes": {
+        "quantity": 575,
+        "order_value": 77625,
+        "deadline": "2026-11-25",
+        "gross_margin": 0.29,
+        "production_days": 3
+      }
+    },
+    {
+      "id": "order-4",
+      "name": "SO-4104",
+      "type": "Order",
+      "attributes": {
+        "quantity": 300,
+        "order_value": 42000,
+        "deadline": "2026-11-26",
+        "gross_margin": 0.26,
+        "production_days": 3
+      }
+    },
+    {
+      "id": "order-5",
+      "name": "SO-4105",
+      "type": "Order",
+      "attributes": {
+        "quantity": 575,
+        "order_value": 83375,
+        "deadline": "2026-11-27",
+        "gross_margin": 0.34,
+        "production_days": 3
+      }
+    },
+    {
+      "id": "order-6",
+      "name": "SO-4106",
+      "type": "Order",
+      "attributes": {
+        "quantity": 575,
+        "order_value": 86250,
+        "deadline": "2026-11-25",
+        "gross_margin": 0.41,
+        "production_days": 3
+      }
+    },
+    {
+      "id": "order-7",
+      "name": "SO-4107",
+      "type": "Order",
+      "attributes": {
+        "quantity": 575,
+        "order_value": 89125,
+        "deadline": "2026-11-26",
+        "gross_margin": 0.38,
+        "production_days": 3
+      }
+    },
+    {
+      "id": "order-8",
+      "name": "SO-4108",
+      "type": "Order",
+      "attributes": {
+        "quantity": 575,
+        "order_value": 92000,
+        "deadline": "2026-11-27",
+        "gross_margin": 0.29,
+        "production_days": 3
+      }
+    },
+    {
+      "id": "order-9",
+      "name": "SO-4109",
+      "type": "Order",
+      "attributes": {
+        "quantity": 300,
+        "order_value": 49500,
+        "deadline": "2026-11-25",
+        "gross_margin": 0.26,
+        "production_days": 3
+      }
+    }
+  ],
+  "edges": [
+    {
+      "id": "A:LOCATED_IN:CN",
+      "source": "A",
+      "target": "CN",
+      "predicate": "LOCATED_IN",
+      "attributes": {}
+    },
+    {
+      "id": "A:HAS_CAPACITY:cap-A",
+      "source": "A",
+      "target": "cap-A",
+      "predicate": "HAS_CAPACITY",
+      "attributes": {}
+    },
+    {
+      "id": "A:SHIPS_THROUGH:shenzhen",
+      "source": "A",
+      "target": "shenzhen",
+      "predicate": "SHIPS_THROUGH",
+      "attributes": {}
+    },
+    {
+      "id": "B:LOCATED_IN:TW",
+      "source": "B",
+      "target": "TW",
+      "predicate": "LOCATED_IN",
+      "attributes": {}
+    },
+    {
+      "id": "B:HAS_CAPACITY:cap-B",
+      "source": "B",
+      "target": "cap-B",
+      "predicate": "HAS_CAPACITY",
+      "attributes": {}
+    },
+    {
+      "id": "B:SHIPS_THROUGH:kaohsiung",
+      "source": "B",
+      "target": "kaohsiung",
+      "predicate": "SHIPS_THROUGH",
+      "attributes": {}
+    },
+    {
+      "id": "C:LOCATED_IN:VN",
+      "source": "C",
+      "target": "VN",
+      "predicate": "LOCATED_IN",
+      "attributes": {}
+    },
+    {
+      "id": "C:HAS_CAPACITY:cap-C",
+      "source": "C",
+      "target": "cap-C",
+      "predicate": "HAS_CAPACITY",
+      "attributes": {}
+    },
+    {
+      "id": "C:SHIPS_THROUGH:haiphong",
+      "source": "C",
+      "target": "haiphong",
+      "predicate": "SHIPS_THROUGH",
+      "attributes": {}
+    },
+    {
+      "id": "D:LOCATED_IN:CN",
+      "source": "D",
+      "target": "CN",
+      "predicate": "LOCATED_IN",
+      "attributes": {}
+    },
+    {
+      "id": "D:HAS_CAPACITY:cap-D",
+      "source": "D",
+      "target": "cap-D",
+      "predicate": "HAS_CAPACITY",
+      "attributes": {}
+    },
+    {
+      "id": "D:SHIPS_THROUGH:shenzhen",
+      "source": "D",
+      "target": "shenzhen",
+      "predicate": "SHIPS_THROUGH",
+      "attributes": {}
+    },
+    {
+      "id": "E:LOCATED_IN:DE",
+      "source": "E",
+      "target": "DE",
+      "predicate": "LOCATED_IN",
+      "attributes": {}
+    },
+    {
+      "id": "E:HAS_CAPACITY:cap-E",
+      "source": "E",
+      "target": "cap-E",
+      "predicate": "HAS_CAPACITY",
+      "attributes": {}
+    },
+    {
+      "id": "E:SHIPS_THROUGH:hamburg",
+      "source": "E",
+      "target": "hamburg",
+      "predicate": "SHIPS_THROUGH",
+      "attributes": {}
+    },
+    {
+      "id": "F:LOCATED_IN:VN",
+      "source": "F",
+      "target": "VN",
+      "predicate": "LOCATED_IN",
+      "attributes": {}
+    },
+    {
+      "id": "F:HAS_CAPACITY:cap-F",
+      "source": "F",
+      "target": "cap-F",
+      "predicate": "HAS_CAPACITY",
+      "attributes": {}
+    },
+    {
+      "id": "F:SHIPS_THROUGH:haiphong",
+      "source": "F",
+      "target": "haiphong",
+      "predicate": "SHIPS_THROUGH",
+      "attributes": {}
+    },
+    {
+      "id": "G:LOCATED_IN:TW",
+      "source": "G",
+      "target": "TW",
+      "predicate": "LOCATED_IN",
+      "attributes": {}
+    },
+    {
+      "id": "G:HAS_CAPACITY:cap-G",
+      "source": "G",
+      "target": "cap-G",
+      "predicate": "HAS_CAPACITY",
+      "attributes": {}
+    },
+    {
+      "id": "G:SHIPS_THROUGH:kaohsiung",
+      "source": "G",
+      "target": "kaohsiung",
+      "predicate": "SHIPS_THROUGH",
+      "attributes": {}
+    },
+    {
+      "id": "H:LOCATED_IN:DE",
+      "source": "H",
+      "target": "DE",
+      "predicate": "LOCATED_IN",
+      "attributes": {}
+    },
+    {
+      "id": "H:HAS_CAPACITY:cap-H",
+      "source": "H",
+      "target": "cap-H",
+      "predicate": "HAS_CAPACITY",
+      "attributes": {}
+    },
+    {
+      "id": "H:SHIPS_THROUGH:hamburg",
+      "source": "H",
+      "target": "hamburg",
+      "predicate": "SHIPS_THROUGH",
+      "attributes": {}
+    },
+    {
+      "id": "route-0:CONNECTS:shenzhen",
+      "source": "route-0",
+      "target": "shenzhen",
+      "predicate": "CONNECTS",
+      "attributes": {}
+    },
+    {
+      "id": "route-0:CONNECTS:hamburg",
+      "source": "route-0",
+      "target": "hamburg",
+      "predicate": "CONNECTS",
+      "attributes": {}
+    },
+    {
+      "id": "route-1:CONNECTS:kaohsiung",
+      "source": "route-1",
+      "target": "kaohsiung",
+      "predicate": "CONNECTS",
+      "attributes": {}
+    },
+    {
+      "id": "route-1:CONNECTS:hamburg",
+      "source": "route-1",
+      "target": "hamburg",
+      "predicate": "CONNECTS",
+      "attributes": {}
+    },
+    {
+      "id": "route-2:CONNECTS:haiphong",
+      "source": "route-2",
+      "target": "haiphong",
+      "predicate": "CONNECTS",
+      "attributes": {}
+    },
+    {
+      "id": "route-2:CONNECTS:hamburg",
+      "source": "route-2",
+      "target": "hamburg",
+      "predicate": "CONNECTS",
+      "attributes": {}
+    },
+    {
+      "id": "mcu:HAS_HS_CODE:8542",
+      "source": "mcu",
+      "target": "8542",
+      "predicate": "HAS_HS_CODE",
+      "attributes": {}
+    },
+    {
+      "id": "pmic:HAS_HS_CODE:8542",
+      "source": "pmic",
+      "target": "8542",
+      "predicate": "HAS_HS_CODE",
+      "attributes": {}
+    },
+    {
+      "id": "radio:HAS_HS_CODE:8473",
+      "source": "radio",
+      "target": "8473",
+      "predicate": "HAS_HS_CODE",
+      "attributes": {}
+    },
+    {
+      "id": "sensor:HAS_HS_CODE:8473",
+      "source": "sensor",
+      "target": "8473",
+      "predicate": "HAS_HS_CODE",
+      "attributes": {}
+    },
+    {
+      "id": "cap:HAS_HS_CODE:8532",
+      "source": "cap",
+      "target": "8532",
+      "predicate": "HAS_HS_CODE",
+      "attributes": {}
+    },
+    {
+      "id": "psu:HAS_HS_CODE:8504",
+      "source": "psu",
+      "target": "8504",
+      "predicate": "HAS_HS_CODE",
+      "attributes": {}
+    },
+    {
+      "id": "pcb:HAS_HS_CODE:8473",
+      "source": "pcb",
+      "target": "8473",
+      "predicate": "HAS_HS_CODE",
+      "attributes": {}
+    },
+    {
+      "id": "case:HAS_HS_CODE:8473",
+      "source": "case",
+      "target": "8473",
+      "predicate": "HAS_HS_CODE",
+      "attributes": {}
+    },
+    {
+      "id": "screen:HAS_HS_CODE:8473",
+      "source": "screen",
+      "target": "8473",
+      "predicate": "HAS_HS_CODE",
+      "attributes": {}
+    },
+    {
+      "id": "cable:HAS_HS_CODE:8473",
+      "source": "cable",
+      "target": "8473",
+      "predicate": "HAS_HS_CODE",
+      "attributes": {}
+    },
+    {
+      "id": "fan:HAS_HS_CODE:8473",
+      "source": "fan",
+      "target": "8473",
+      "predicate": "HAS_HS_CODE",
+      "attributes": {}
+    },
+    {
+      "id": "connector:HAS_HS_CODE:8473",
+      "source": "connector",
+      "target": "8473",
+      "predicate": "HAS_HS_CODE",
+      "attributes": {}
+    },
+    {
+      "id": "A:SUPPLIES:mcu",
+      "source": "A",
+      "target": "mcu",
+      "predicate": "SUPPLIES",
+      "attributes": {
+        "unit_price": 8,
+        "freight": 0.5,
+        "expedite_premium": 0.5,
+        "qualified": true
+      }
+    },
+    {
+      "id": "B:SUPPLIES:mcu",
+      "source": "B",
+      "target": "mcu",
+      "predicate": "SUPPLIES",
+      "attributes": {
+        "unit_price": 8.4,
+        "freight": 0.6,
+        "expedite_premium": 0.5,
+        "qualified": true
+      }
+    },
+    {
+      "id": "C:SUPPLIES:mcu",
+      "source": "C",
+      "target": "mcu",
+      "predicate": "SUPPLIES",
+      "attributes": {
+        "unit_price": 8.8,
+        "freight": 0.4,
+        "expedite_premium": 0.5,
+        "qualified": true
+      }
+    },
+    {
+      "id": "D:SUPPLIES:pmic",
+      "source": "D",
+      "target": "pmic",
+      "predicate": "SUPPLIES",
+      "attributes": {
+        "unit_price": 4,
+        "freight": 0.3,
+        "expedite_premium": 0.5,
+        "qualified": true
+      }
+    },
+    {
+      "id": "G:SUPPLIES:pmic",
+      "source": "G",
+      "target": "pmic",
+      "predicate": "SUPPLIES",
+      "attributes": {
+        "unit_price": 4.5,
+        "freight": 0.3,
+        "expedite_premium": 0.5,
+        "qualified": true
+      }
+    },
+    {
+      "id": "E:SUPPLIES:radio",
+      "source": "E",
+      "target": "radio",
+      "predicate": "SUPPLIES",
+      "attributes": {
+        "unit_price": 1.2,
+        "freight": 0.15,
+        "qualified": true
+      }
+    },
+    {
+      "id": "F:SUPPLIES:sensor",
+      "source": "F",
+      "target": "sensor",
+      "predicate": "SUPPLIES",
+      "attributes": {
+        "unit_price": 1.9,
+        "freight": 0.15,
+        "qualified": true
+      }
+    },
+    {
+      "id": "G:SUPPLIES:cap",
+      "source": "G",
+      "target": "cap",
+      "predicate": "SUPPLIES",
+      "attributes": {
+        "unit_price": 2.6,
+        "freight": 0.15,
+        "qualified": true
+      }
+    },
+    {
+      "id": "H:SUPPLIES:psu",
+      "source": "H",
+      "target": "psu",
+      "predicate": "SUPPLIES",
+      "attributes": {
+        "unit_price": 3.3,
+        "freight": 0.15,
+        "qualified": true
+      }
+    },
+    {
+      "id": "E:SUPPLIES:pcb",
+      "source": "E",
+      "target": "pcb",
+      "predicate": "SUPPLIES",
+      "attributes": {
+        "unit_price": 4.0,
+        "freight": 0.15,
+        "qualified": true
+      }
+    },
+    {
+      "id": "F:SUPPLIES:case",
+      "source": "F",
+      "target": "case",
+      "predicate": "SUPPLIES",
+      "attributes": {
+        "unit_price": 4.7,
+        "freight": 0.15,
+        "qualified": true
+      }
+    },
+    {
+      "id": "G:SUPPLIES:screen",
+      "source": "G",
+      "target": "screen",
+      "predicate": "SUPPLIES",
+      "attributes": {
+        "unit_price": 5.4,
+        "freight": 0.15,
+        "qualified": true
+      }
+    },
+    {
+      "id": "H:SUPPLIES:cable",
+      "source": "H",
+      "target": "cable",
+      "predicate": "SUPPLIES",
+      "attributes": {
+        "unit_price": 6.1,
+        "freight": 0.15,
+        "qualified": true
+      }
+    },
+    {
+      "id": "E:SUPPLIES:fan",
+      "source": "E",
+      "target": "fan",
+      "predicate": "SUPPLIES",
+      "attributes": {
+        "unit_price": 6.8,
+        "freight": 0.15,
+        "qualified": true
+      }
+    },
+    {
+      "id": "F:SUPPLIES:connector",
+      "source": "F",
+      "target": "connector",
+      "predicate": "SUPPLIES",
+      "attributes": {
+        "unit_price": 7.5,
+        "freight": 0.15,
+        "qualified": true
+      }
+    },
+    {
+      "id": "wh-0:STOCKS:mcu",
+      "source": "wh-0",
+      "target": "mcu",
+      "predicate": "STOCKS",
+      "attributes": {
+        "quantity": 400
+      }
+    },
+    {
+      "id": "wh-1:IN_TRANSIT:mcu",
+      "source": "wh-1",
+      "target": "mcu",
+      "predicate": "IN_TRANSIT",
+      "attributes": {
+        "quantity": 200,
+        "arrival": "2026-11-05"
+      }
+    },
+    {
+      "id": "wh-0:STOCKS:pmic",
+      "source": "wh-0",
+      "target": "pmic",
+      "predicate": "STOCKS",
+      "attributes": {
+        "quantity": 200
+      }
+    },
+    {
+      "id": "wh-1:IN_TRANSIT:pmic",
+      "source": "wh-1",
+      "target": "pmic",
+      "predicate": "IN_TRANSIT",
+      "attributes": {
+        "quantity": 100,
+        "arrival": "2026-11-05"
+      }
+    },
+    {
+      "id": "wh-2:STOCKS:radio",
+      "source": "wh-2",
+      "target": "radio",
+      "predicate": "STOCKS",
+      "attributes": {
+        "quantity": 20000
+      }
+    },
+    {
+      "id": "wh-2:STOCKS:sensor",
+      "source": "wh-2",
+      "target": "sensor",
+      "predicate": "STOCKS",
+      "attributes": {
+        "quantity": 20000
+      }
+    },
+    {
+      "id": "wh-2:STOCKS:cap",
+      "source": "wh-2",
+      "target": "cap",
+      "predicate": "STOCKS",
+      "attributes": {
+        "quantity": 20000
+      }
+    },
+    {
+      "id": "wh-2:STOCKS:psu",
+      "source": "wh-2",
+      "target": "psu",
+      "predicate": "STOCKS",
+      "attributes": {
+        "quantity": 20000
+      }
+    },
+    {
+      "id": "wh-2:STOCKS:pcb",
+      "source": "wh-2",
+      "target": "pcb",
+      "predicate": "STOCKS",
+      "attributes": {
+        "quantity": 20000
+      }
+    },
+    {
+      "id": "wh-2:STOCKS:case",
+      "source": "wh-2",
+      "target": "case",
+      "predicate": "STOCKS",
+      "attributes": {
+        "quantity": 20000
+      }
+    },
+    {
+      "id": "wh-2:STOCKS:screen",
+      "source": "wh-2",
+      "target": "screen",
+      "predicate": "STOCKS",
+      "attributes": {
+        "quantity": 20000
+      }
+    },
+    {
+      "id": "wh-2:STOCKS:cable",
+      "source": "wh-2",
+      "target": "cable",
+      "predicate": "STOCKS",
+      "attributes": {
+        "quantity": 20000
+      }
+    },
+    {
+      "id": "wh-2:STOCKS:fan",
+      "source": "wh-2",
+      "target": "fan",
+      "predicate": "STOCKS",
+      "attributes": {
+        "quantity": 20000
+      }
+    },
+    {
+      "id": "wh-2:STOCKS:connector",
+      "source": "wh-2",
+      "target": "connector",
+      "predicate": "STOCKS",
+      "attributes": {
+        "quantity": 20000
+      }
+    },
+    {
+      "id": "plant-0:PRODUCES:gateway",
+      "source": "plant-0",
+      "target": "gateway",
+      "predicate": "PRODUCES",
+      "attributes": {}
+    },
+    {
+      "id": "gateway:REQUIRES:mcu",
+      "source": "gateway",
+      "target": "mcu",
+      "predicate": "REQUIRES",
+      "attributes": {
+        "bom_quantity": 1
+      }
+    },
+    {
+      "id": "gateway:REQUIRES:pmic",
+      "source": "gateway",
+      "target": "pmic",
+      "predicate": "REQUIRES",
+      "attributes": {
+        "bom_quantity": 1
+      }
+    },
+    {
+      "id": "gateway:REQUIRES:radio",
+      "source": "gateway",
+      "target": "radio",
+      "predicate": "REQUIRES",
+      "attributes": {
+        "bom_quantity": 1
+      }
+    },
+    {
+      "id": "gateway:REQUIRES:pcb",
+      "source": "gateway",
+      "target": "pcb",
+      "predicate": "REQUIRES",
+      "attributes": {
+        "bom_quantity": 1
+      }
+    },
+    {
+      "id": "gateway:REQUIRES:case",
+      "source": "gateway",
+      "target": "case",
+      "predicate": "REQUIRES",
+      "attributes": {
+        "bom_quantity": 1
+      }
+    },
+    {
+      "id": "gateway:REQUIRES:cable",
+      "source": "gateway",
+      "target": "cable",
+      "predicate": "REQUIRES",
+      "attributes": {
+        "bom_quantity": 1
+      }
+    },
+    {
+      "id": "plant-1:PRODUCES:controller",
+      "source": "plant-1",
+      "target": "controller",
+      "predicate": "PRODUCES",
+      "attributes": {}
+    },
+    {
+      "id": "controller:REQUIRES:mcu",
+      "source": "controller",
+      "target": "mcu",
+      "predicate": "REQUIRES",
+      "attributes": {
+        "bom_quantity": 1
+      }
+    },
+    {
+      "id": "controller:REQUIRES:pmic",
+      "source": "controller",
+      "target": "pmic",
+      "predicate": "REQUIRES",
+      "attributes": {
+        "bom_quantity": 1
+      }
+    },
+    {
+      "id": "controller:REQUIRES:sensor",
+      "source": "controller",
+      "target": "sensor",
+      "predicate": "REQUIRES",
+      "attributes": {
+        "bom_quantity": 1
+      }
+    },
+    {
+      "id": "controller:REQUIRES:pcb",
+      "source": "controller",
+      "target": "pcb",
+      "predicate": "REQUIRES",
+      "attributes": {
+        "bom_quantity": 1
+      }
+    },
+    {
+      "id": "controller:REQUIRES:case",
+      "source": "controller",
+      "target": "case",
+      "predicate": "REQUIRES",
+      "attributes": {
+        "bom_quantity": 1
+      }
+    },
+    {
+      "id": "controller:REQUIRES:cable",
+      "source": "controller",
+      "target": "cable",
+      "predicate": "REQUIRES",
+      "attributes": {
+        "bom_quantity": 1
+      }
+    },
+    {
+      "id": "plant-0:PRODUCES:monitor",
+      "source": "plant-0",
+      "target": "monitor",
+      "predicate": "PRODUCES",
+      "attributes": {}
+    },
+    {
+      "id": "monitor:REQUIRES:mcu",
+      "source": "monitor",
+      "target": "mcu",
+      "predicate": "REQUIRES",
+      "attributes": {
+        "bom_quantity": 1
+      }
+    },
+    {
+      "id": "monitor:REQUIRES:pmic",
+      "source": "monitor",
+      "target": "pmic",
+      "predicate": "REQUIRES",
+      "attributes": {
+        "bom_quantity": 1
+      }
+    },
+    {
+      "id": "monitor:REQUIRES:cap",
+      "source": "monitor",
+      "target": "cap",
+      "predicate": "REQUIRES",
+      "attributes": {
+        "bom_quantity": 1
+      }
+    },
+    {
+      "id": "monitor:REQUIRES:pcb",
+      "source": "monitor",
+      "target": "pcb",
+      "predicate": "REQUIRES",
+      "attributes": {
+        "bom_quantity": 1
+      }
+    },
+    {
+      "id": "monitor:REQUIRES:case",
+      "source": "monitor",
+      "target": "case",
+      "predicate": "REQUIRES",
+      "attributes": {
+        "bom_quantity": 1
+      }
+    },
+    {
+      "id": "monitor:REQUIRES:cable",
+      "source": "monitor",
+      "target": "cable",
+      "predicate": "REQUIRES",
+      "attributes": {
+        "bom_quantity": 1
+      }
+    },
+    {
+      "id": "plant-1:PRODUCES:hub",
+      "source": "plant-1",
+      "target": "hub",
+      "predicate": "PRODUCES",
+      "attributes": {}
+    },
+    {
+      "id": "hub:REQUIRES:mcu",
+      "source": "hub",
+      "target": "mcu",
+      "predicate": "REQUIRES",
+      "attributes": {
+        "bom_quantity": 1
+      }
+    },
+    {
+      "id": "hub:REQUIRES:pmic",
+      "source": "hub",
+      "target": "pmic",
+      "predicate": "REQUIRES",
+      "attributes": {
+        "bom_quantity": 1
+      }
+    },
+    {
+      "id": "hub:REQUIRES:psu",
+      "source": "hub",
+      "target": "psu",
+      "predicate": "REQUIRES",
+      "attributes": {
+        "bom_quantity": 1
+      }
+    },
+    {
+      "id": "hub:REQUIRES:pcb",
+      "source": "hub",
+      "target": "pcb",
+      "predicate": "REQUIRES",
+      "attributes": {
+        "bom_quantity": 1
+      }
+    },
+    {
+      "id": "hub:REQUIRES:case",
+      "source": "hub",
+      "target": "case",
+      "predicate": "REQUIRES",
+      "attributes": {
+        "bom_quantity": 1
+      }
+    },
+    {
+      "id": "hub:REQUIRES:cable",
+      "source": "hub",
+      "target": "cable",
+      "predicate": "REQUIRES",
+      "attributes": {
+        "bom_quantity": 1
+      }
+    },
+    {
+      "id": "plant-0:PRODUCES:power",
+      "source": "plant-0",
+      "target": "power",
+      "predicate": "PRODUCES",
+      "attributes": {}
+    },
+    {
+      "id": "power:REQUIRES:pcb",
+      "source": "power",
+      "target": "pcb",
+      "predicate": "REQUIRES",
+      "attributes": {
+        "bom_quantity": 1
+      }
+    },
+    {
+      "id": "power:REQUIRES:case",
+      "source": "power",
+      "target": "case",
+      "predicate": "REQUIRES",
+      "attributes": {
+        "bom_quantity": 1
+      }
+    },
+    {
+      "id": "power:REQUIRES:cable",
+      "source": "power",
+      "target": "cable",
+      "predicate": "REQUIRES",
+      "attributes": {
+        "bom_quantity": 1
+      }
+    },
+    {
+      "id": "order-0:CONTAINS:gateway",
+      "source": "order-0",
+      "target": "gateway",
+      "predicate": "CONTAINS",
+      "attributes": {
+        "quantity": 575
+      }
+    },
+    {
+      "id": "order-0:FOR_CUSTOMER:customer-0",
+      "source": "order-0",
+      "target": "customer-0",
+      "predicate": "FOR_CUSTOMER",
+      "attributes": {}
+    },
+    {
+      "id": "order-1:CONTAINS:controller",
+      "source": "order-1",
+      "target": "controller",
+      "predicate": "CONTAINS",
+      "attributes": {
+        "quantity": 575
+      }
+    },
+    {
+      "id": "order-1:FOR_CUSTOMER:customer-1",
+      "source": "order-1",
+      "target": "customer-1",
+      "predicate": "FOR_CUSTOMER",
+      "attributes": {}
+    },
+    {
+      "id": "order-2:CONTAINS:monitor",
+      "source": "order-2",
+      "target": "monitor",
+      "predicate": "CONTAINS",
+      "attributes": {
+        "quantity": 575
+      }
+    },
+    {
+      "id": "order-2:FOR_CUSTOMER:customer-2",
+      "source": "order-2",
+      "target": "customer-2",
+      "predicate": "FOR_CUSTOMER",
+      "attributes": {}
+    },
+    {
+      "id": "order-3:CONTAINS:hub",
+      "source": "order-3",
+      "target": "hub",
+      "predicate": "CONTAINS",
+      "attributes": {
+        "quantity": 575
+      }
+    },
+    {
+      "id": "order-3:FOR_CUSTOMER:customer-3",
+      "source": "order-3",
+      "target": "customer-3",
+      "predicate": "FOR_CUSTOMER",
+      "attributes": {}
+    },
+    {
+      "id": "order-4:CONTAINS:power",
+      "source": "order-4",
+      "target": "power",
+      "predicate": "CONTAINS",
+      "attributes": {
+        "quantity": 300
+      }
+    },
+    {
+      "id": "order-4:FOR_CUSTOMER:customer-4",
+      "source": "order-4",
+      "target": "customer-4",
+      "predicate": "FOR_CUSTOMER",
+      "attributes": {}
+    },
+    {
+      "id": "order-5:CONTAINS:gateway",
+      "source": "order-5",
+      "target": "gateway",
+      "predicate": "CONTAINS",
+      "attributes": {
+        "quantity": 575
+      }
+    },
+    {
+      "id": "order-5:FOR_CUSTOMER:customer-0",
+      "source": "order-5",
+      "target": "customer-0",
+      "predicate": "FOR_CUSTOMER",
+      "attributes": {}
+    },
+    {
+      "id": "order-6:CONTAINS:controller",
+      "source": "order-6",
+      "target": "controller",
+      "predicate": "CONTAINS",
+      "attributes": {
+        "quantity": 575
+      }
+    },
+    {
+      "id": "order-6:FOR_CUSTOMER:customer-1",
+      "source": "order-6",
+      "target": "customer-1",
+      "predicate": "FOR_CUSTOMER",
+      "attributes": {}
+    },
+    {
+      "id": "order-7:CONTAINS:monitor",
+      "source": "order-7",
+      "target": "monitor",
+      "predicate": "CONTAINS",
+      "attributes": {
+        "quantity": 575
+      }
+    },
+    {
+      "id": "order-7:FOR_CUSTOMER:customer-2",
+      "source": "order-7",
+      "target": "customer-2",
+      "predicate": "FOR_CUSTOMER",
+      "attributes": {}
+    },
+    {
+      "id": "order-8:CONTAINS:hub",
+      "source": "order-8",
+      "target": "hub",
+      "predicate": "CONTAINS",
+      "attributes": {
+        "quantity": 575
+      }
+    },
+    {
+      "id": "order-8:FOR_CUSTOMER:customer-3",
+      "source": "order-8",
+      "target": "customer-3",
+      "predicate": "FOR_CUSTOMER",
+      "attributes": {}
+    },
+    {
+      "id": "order-9:CONTAINS:power",
+      "source": "order-9",
+      "target": "power",
+      "predicate": "CONTAINS",
+      "attributes": {
+        "quantity": 300
+      }
+    },
+    {
+      "id": "order-9:FOR_CUSTOMER:customer-4",
+      "source": "order-9",
+      "target": "customer-4",
+      "predicate": "FOR_CUSTOMER",
+      "attributes": {}
+    }
+  ]
+}
