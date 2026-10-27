@@ -12,6 +12,8 @@ from pydantic import BaseModel
 from backend.config import MEMORY_MODE, RUNTIME
 from backend.engine import IncidentEngine
 from backend.graph.graphiti_client import TemporalMemory
+from backend.api.tariffs import router as tariffs_router
+from backend.tariffs.scheduler import daily_crawl_loop
 from backend.models.questions import GraphAnswer, GraphQuestion
 from backend.models.runs import RunPolicy
 from backend.evaluation import evaluate_run
@@ -31,7 +33,9 @@ async def lifespan(app: FastAPI):
         app.state.engine = IncidentEngine(memory, saver)
         await app.state.engine.initialize()
         app.state.task = None
+        app.state.tariff_sync = asyncio.create_task(daily_crawl_loop())
         yield
+        app.state.tariff_sync.cancel()
         if app.state.task and not app.state.task.done():
             app.state.task.cancel()
             try:
@@ -42,6 +46,7 @@ async def lifespan(app: FastAPI):
 
 
 app = FastAPI(title="SupplyChain Copilot", lifespan=lifespan)
+app.include_router(tariffs_router)
 
 
 @app.get("/api/qa/models")

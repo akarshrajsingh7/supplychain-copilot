@@ -4,6 +4,7 @@ from langchain_core.tools import tool
 
 from backend.agents.deterministic_model import DeterministicDemoModel
 from backend.agents.routing import ModelRouter, ModelRoutingMiddleware
+from backend.tariffs.tools import TARIFF_TOOLS
 
 
 ROLES = [
@@ -78,7 +79,7 @@ def build_commander(engine, checkpointer, mode="deterministic"):
 
     return create_deep_agent(model=model("commander"), subagents=subagents,
         middleware=[ModelRoutingMiddleware(router, "commander")],
-        tools=[request_mitigation_approval, get_investigation_status], checkpointer=checkpointer, name="supply-chain-commander",
+        tools=[request_mitigation_approval, get_investigation_status, *TARIFF_TOOLS], checkpointer=checkpointer, name="supply-chain-commander",
         system_prompt="""You are Supply Chain Commander, an incident investigator, not a chatbot.
 Use write_todos to plan. Delegate in this order, sequentially through task:
 policy-analyst, impact-analyst, inventory-analyst, sourcing-analyst, mitigation-planner,
@@ -86,6 +87,9 @@ risk-critic. The initial proposal deliberately tests the cheapest alternate MCU 
 When rejected, delegate sourcing-analyst then mitigation-planner then risk-critic again.
 Request approval using request_mitigation_approval only after a verified revised plan.
 Never approve your own plan. Never invent numeric facts. Tools calculate everything.
+For official US duty context, use lookup_hts_code / search_tariffs (daily-synced USITC HTS)
+and recent_tariff_changes for schedule changes; cite their data_freshness. The incident policy
+itself is SIMULATED, so never present HTS rates as the incident's rate.
 Do not repeat completed evidence lookups except the required sourcing/planner/critic revision cycle.
 The risk-critic MUST be delegated again AFTER the revised plan is built, even if
 risk-critic already appears in completed_roles. A planner proposal is not verification.

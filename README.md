@@ -153,6 +153,36 @@ All prices are synthetic **EUR**; no FX conversion or news API is needed. This i
 
 Regular incumbent replenishment is booked for November 17. Expediting A uses a four-day lead time and a maximum 800-unit early dispatch window. Alternative lead times include port delays; production requires three days. Orders are due November 25–27. Existing inventory and incoming stock were imported before the tariff and incur no new tariff. Supplier spare capacity already excludes other committed demand. Non-incident components have sufficient seeded stock. Cost comparisons cover only the affected procurement, not the whole company’s P&L. Capacity is a single-window cap, not a multi-period optimization model.
 
+## Daily tariff data (USITC HTS)
+
+`backend/tariffs/` syncs the full US Harmonized Tariff Schedule once a day from the official
+USITC REST API (`https://hts.usitc.gov/reststop/exportList`, one JSON request per chapter, ~3 min).
+Rows are stored in `runtime/tariffs.db` (SQLite + FTS5). Each sync diffs against the previous
+snapshot and logs added, removed, and modified lines field by field. If a chapter fails or comes
+back empty, its previous data is kept.
+
+The Commander gets three LangChain tools (`backend/tariffs/tools.py`):
+
+| Tool | Purpose |
+|---|---|
+| `lookup_hts_code` | Rates for a 4–10 digit code, parent lines, and footnotes (Ch. 99 / Section 301/232 refs) |
+| `search_tariffs` | Product-description search for candidate HTS codes |
+| `recent_tariff_changes` | Schedule changes detected in the last N days, filterable by prefix |
+
+The deterministic demo script does not call these tools, so the rehearsal is unchanged. In
+`AGENT_MODE=live`, the model can call them. The demo incident stays **simulated**.
+
+```bash
+uv run python -m backend.tariffs.scheduler --once --chapters 85 99   # quick load for the demo
+uv run python -m backend.tariffs.scheduler --once                    # full schedule
+```
+The dashboard's **US tariff data** panel, below the knowledge graph, shows the last sync, the number
+of lines tracked, the next scheduled run, live progress during a sync, and the latest schedule
+changes. It also has **Quick sync (Ch. 85 & 99)** and **Full sync** buttons. These are backed by
+`GET /api/tariffs/status`, `GET /api/tariffs/changes` and `POST /api/tariffs/sync`.
+
+The API server runs the sync daily at `TARIFF_CRAWL_TIME` (`TARIFF_CRAWL=off` disables it; see `.env.example`).
+
 ## LangSmith
 
 See [LangSmith setup](docs/LANGSMITH_SETUP.md) for live OpenAI configuration, regional endpoints, trace navigation and repeatable evaluations. The current tracing-only setup records Commander/model/task/tool spans and a **Process evaluations** span with objective checks. Open **Run evidence** for the trace ID and results. Approval resume has a separate trace correlated by `demo_run`.
