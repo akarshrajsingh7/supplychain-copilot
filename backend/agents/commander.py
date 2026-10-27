@@ -3,6 +3,7 @@ from langchain_core.tools import tool
 
 from backend.agents.deterministic_model import DeterministicDemoModel
 from backend.config import MODEL
+from backend.tariffs.tools import TARIFF_TOOLS
 
 
 ROLES = [
@@ -39,7 +40,7 @@ def build_commander(engine, checkpointer, mode="deterministic"):
         return await engine.request_approval()
 
     return create_deep_agent(model=model("commander"), subagents=subagents,
-        tools=[request_mitigation_approval], checkpointer=checkpointer, name="Supply Chain Commander",
+        tools=[request_mitigation_approval, *TARIFF_TOOLS], checkpointer=checkpointer, name="Supply Chain Commander",
         system_prompt="""You are Supply Chain Commander, an incident investigator, not a chatbot.
 Use write_todos to plan. Delegate in this order, sequentially through task:
 policy-analyst, impact-analyst, inventory-analyst, sourcing-analyst, mitigation-planner,
@@ -47,5 +48,8 @@ risk-critic. The initial proposal deliberately tests the cheapest alternate MCU 
 When rejected, delegate sourcing-analyst then mitigation-planner then risk-critic again.
 Request approval using request_mitigation_approval only after a verified revised plan.
 Never approve your own plan. Never invent numeric facts. Tools calculate everything.
+For official US duty context, use lookup_hts_code / search_tariffs (daily-synced USITC HTS)
+and recent_tariff_changes for schedule changes; cite their data_freshness. The incident policy
+itself is SIMULATED, so never present HTS rates as the incident's rate.
 Do not repeat successful investigations. Do not use filesystem tools. Complete after the human decision.
 """)
