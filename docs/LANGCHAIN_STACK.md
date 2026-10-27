@@ -2,6 +2,8 @@
 
 The application uses **Deep Agents** for orchestration, **LangChain** interfaces for models and tools, **LangGraph** for execution/checkpointing/human approval, and **LangSmith** for optional tracing. Graphiti, Neo4j, FastAPI and the React UI are separate technologies.
 
+The added **Ask graph** feature makes a separate, read-only model call through LangChain, independent of Commander mode. It uses `ChatOllama` (`langchain-ollama` 1.1.0), `ChatOpenAI`, `ChatAnthropic` (`langchain-anthropic` 1.7.6), or `ChatGoogleGenerativeAI` (`langchain-google-genai` 4.4.2). These provider packages are explicit dependencies. Q&A uses source records from the graph and deterministic calculations; it is excluded from LangSmith tracing and receives no action tools. See [Graph questions](GRAPH_QUESTIONS.md).
+
 This inventory describes the checked-in implementation and locked dependencies. See [Architecture](ARCHITECTURE.md) for the complete flow and [API audit](API_AUDIT.md) for the original compatibility checks.
 
 ## 1. Product-to-code map
@@ -11,7 +13,10 @@ This inventory describes the checked-in implementation and locked dependencies. 
 | Deep Agents / `deepagents` | 0.7.32 | Commander harness; planning; `task` delegation to six declarative subagents | [`commander.py`](../backend/agents/commander.py) |
 | LangChain / `langchain` | 1.4.7, transitive | Underlying agent interfaces and middleware used by Deep Agents | Used through the Deep Agents runtime |
 | LangChain Core / `langchain-core` | 1.7.0, transitive | `@tool`, `BaseChatModel`, `AIMessage`, `ChatGeneration`, `ChatResult` | [`commander.py`](../backend/agents/commander.py), [`deterministic_model.py`](../backend/agents/deterministic_model.py) |
-| OpenAI integration / `langchain-openai` | 1.7.2 | `ChatOpenAI` for live-mode Commander and specialists | [`commander.py`](../backend/agents/commander.py) |
+| OpenAI integration / `langchain-openai` | 1.7.2 | `ChatOpenAI` for live-mode Commander/specialists and optional graph Q&A | [`commander.py`](../backend/agents/commander.py), [`qa.py`](../backend/qa.py) |
+| Ollama integration / `langchain-ollama` | 1.1.0 | `ChatOllama` for local-model graph questions | [`qa.py`](../backend/qa.py) |
+| Anthropic integration / `langchain-anthropic` | 1.7.6 | `ChatAnthropic` for hosted graph questions | [`qa.py`](../backend/qa.py) |
+| Google integration / `langchain-google-genai` | 4.4.2 | `ChatGoogleGenerativeAI` for hosted graph questions | [`qa.py`](../backend/qa.py) |
 | LangGraph / `langgraph` | 1.2.17 | Compiled agent execution; thread-scoped `interrupt` and `Command` resume | [`engine.py`](../backend/engine.py) |
 | LangGraph SQLite checkpoint / `langgraph-checkpoint-sqlite` | 3.1.2 | `AsyncSqliteSaver` for persistent checkpoints | [`api/main.py`](../backend/api/main.py) |
 | LangSmith / `langsmith` | 0.14.12 | Decorated tool/investigation traces, framework spans, optional trace URL | [`engine.py`](../backend/engine.py), [`supply_tools.py`](../backend/tools/supply_tools.py) |
@@ -22,7 +27,7 @@ The transitive `langgraph-checkpoint`, `langgraph-prebuilt`, `langgraph-sdk` and
 
 `build_commander()` calls `create_deep_agent(...)` with a Commander model, system instructions, six subagent specifications, the approval tool, a checkpointer, and a run name. This is the framework's actual harness. Deep Agents supports planning and subagent delegation; this application exercises `write_todos` and `task`. See the official [Deep Agents overview](https://docs.langchain.com/oss/python/deepagents/overview) and [subagent documentation](https://docs.langchain.com/oss/python/deepagents/subagents).
 
-The Commander delegates to Policy, Impact, Inventory, Sourcing, Mitigation Planner and Risk / Critic roles. The roles use the same model selection, but have different instructions and narrow tools. They are logical agents in one backend process, not six independently hosted services.
+The Commander delegates to Policy, Impact, Inventory, Sourcing, Mitigation Planner and Risk / Critic roles. Each role has its own routing middleware and narrow tools. Routine roles use a cheaper model; planner/critic use a thinking model; sourcing escalates after critic rejection. The model is selected before each invocation. They are logical agents in one backend process, not six independently hosted services.
 
 In deterministic mode, the *decision to call the next tool* is scripted. The harness still executes the actual delegations and tools. It does not represent autonomous LLM reasoning or discovery of an unknown recovery path. In live mode the language model chooses calls under the Commander instructions, while Python still computes all numeric results and enforces the final gate.
 
@@ -34,7 +39,7 @@ The `@tool` decorator converts specialist wrappers and the approval function int
 
 The offline model subclasses `BaseChatModel` and emits `AIMessage` tool calls, packaged in `ChatResult` / `ChatGeneration`. This is a test/demo adapter for the same runtime interfaces used by real chat models.
 
-Live mode constructs `ChatOpenAI(model=OPENAI_MODEL, temperature=0)`. The default configured model name is `gpt-4.1-mini`; it is configurable, not a claim about which model is best or currently available to an account. Live operation needs an OpenAI API key and network access. See the official [ChatOpenAI integration](https://docs.langchain.com/oss/python/integrations/chat/openai).
+Live mode uses `ModelRoutingMiddleware` (`AgentMiddleware.awrap_model_call`) to override the actual request model. `MODEL_ROUTING=single` uses `OPENAI_MODEL` everywhere; `cost-aware` selects `OPENAI_ROUTINE_MODEL` or `OPENAI_THINKING_MODEL` according to role and rejection state. Reasoning models receive reasoning effort on thinking routes and omit temperature. See [model routing](MODEL_ROUTING.md). The default configured model name is `gpt-4.1-mini`; it is configurable, not a claim about which model is best or currently available to an account. Live operation needs an OpenAI API key and network access. See the official [ChatOpenAI integration](https://docs.langchain.com/oss/python/integrations/chat/openai).
 
 The project does not build a separate document-RAG pipeline with LangChain loaders, splitters or vector stores. Its business retrieval is through the Graphiti adapter and controlled supply tools.
 
@@ -50,7 +55,7 @@ This implementation uses an explicit `interrupt()` inside its approval tool. It 
 
 ## 5. LangSmith: observability
 
-The code decorates the investigation, downstream traversal, plan simulation and decision resume with `@traceable`. The framework also supplies nested agent/model/tool traces. Configuration adds run names, simulation/model-mode tags, incident ID and `demo_run` metadata. When tracing is enabled, `get_current_run_tree().get_url()` supplies the header's trace link. Official configuration is described in [LangSmith custom instrumentation](https://docs.langchain.com/langsmith/annotate-code).
+The code decorates the investigation, downstream traversal, plan simulation and decision resume with `@traceable`. The framework also supplies nested agent/model/tool traces. Configuration adds run names, simulation/model-mode tags, incident ID and `demo_run` metadata. The app captures trace IDs without project-read calls. With tracing-only credentials the header opens the regional LangSmith homepage; optional workspace/project UUIDs enable direct links. Official configuration is described in [LangSmith custom instrumentation](https://docs.langchain.com/langsmith/annotate-code).
 
 ```dotenv
 LANGSMITH_TRACING=true
@@ -60,7 +65,7 @@ LANGSMITH_PROJECT=supplychain-copilot
 
 An investigation trace is expected to show the Commander, delegations, specialist tools, failed capacity check, revised plan and successful verification. Human resume is another invocation sharing the incident/thread metadata; the code does not keep one continuously running cloud span open while waiting for a person.
 
-LangSmith tracing can be enabled with the deterministic model as well as the live model. Trace upload needs credentials and internet; it is disabled for the offline path. The application does not currently create LangSmith datasets, run evaluation experiments, use prompt management, or deploy through LangSmith. Cloud uploads have not been verified without user credentials.
+LangSmith tracing can be enabled with the deterministic model as well as the live model. Trace upload needs credentials and internet; it is disabled for the offline path. The app records deterministic process checks in trace outputs. The isolated regression CLI supports local evaluation and optional actual LangSmith datasets/experiments via `aevaluate`. Cloud experiment and feedback writes require broader permissions and remain disabled with the current tracing-only key. EU trace ingestion has been verified. Prompt management and LangSmith deployment are not used. See [LangSmith setup](LANGSMITH_SETUP.md).
 
 ## 6. What is separate from LangChain
 
@@ -86,7 +91,7 @@ Graphiti constructs its own OpenAI client/reranker adapters. Those are independe
 | Live + local + tracing off | Yes | Yes | No | SQLite | No |
 | Live + Graphiti + tracing on | Yes | Yes | Yes | SQLite | Yes, with LangSmith credentials |
 
-Agent mode, memory mode and tracing are independent configuration choices. Optional extraction is a fourth choice. Installing provider packages such as Anthropic or Google integrations transitively does not mean they are used by this application; `build_commander()` selects only the scripted model or `ChatOpenAI`.
+Agent mode, memory mode and tracing are independent configuration choices. Optional extraction is a fourth choice. `build_commander()` still selects only the scripted model or `ChatOpenAI`. The separate question panel can select Ollama, OpenAI, Anthropic or Gemini without changing the incident agents. Selecting a question model alone does not invoke it; submitting a question does.
 
 ## 8. How to describe the demo accurately
 

@@ -1,15 +1,18 @@
 # SupplyChain Copilot
 
-**Autonomous Tariff Impact & Mitigation** — a local hackathon control tower built around investigation, a rejected sourcing plan, recovery, and human approval. No chat box.
+**Autonomous Tariff Impact & Mitigation** — a local hackathon control tower built around investigation, a rejected sourcing plan, recovery, and human approval. Includes read-only questions grounded in the supply-chain graph.
 
 ![Control tower](docs/dashboard-approval.png)
 
 ## Documentation
 
+- [Hackathon judging alignment](docs/JUDGING_ALIGNMENT.md): the supplied criteria, evidence to demonstrate, adjusted controls, a three-minute walkthrough and remaining gaps.
 - [Data guide](docs/DATA_GUIDE.md): entities, relationships, field meanings, suppliers, BOMs, orders, inventory, tariff inputs, calculations and temporal evidence.
 - [Solution architecture](docs/ARCHITECTURE.md): overall diagram, investigation/approval sequence, component responsibilities, APIs, runtime modes and persistence.
 - [Architecture diagram — SVG](docs/architecture.svg): standalone visual for presentations and viewers without Mermaid support.
 - [LangChain stack](docs/LANGCHAIN_STACK.md): how Deep Agents, LangChain, LangGraph and LangSmith are used, with versions, code references and official documentation.
+- [Model routing](docs/MODEL_ROUTING.md): cheaper routine calls, reasoning models for planning/critique, escalation after rejection, and judge-visible call evidence.
+- [Ask the graph](docs/GRAPH_QUESTIONS.md): model dropdowns, local Ollama setup, hosted API keys, source citations and credential handling.
 - [API audit](docs/API_AUDIT.md): verified framework APIs, compatibility adjustments and verification limits.
 
 ## Run locally
@@ -56,6 +59,10 @@ npm run dev
 Live mode requires internet and may produce a different delegation cadence. The deterministic plan builders and independent critic calculate all quantities and reject invalid plans in either mode. Approval is blocked until all six roles have investigated, an initial plan has failed, and a revised plan has passed verification.
 
 ## 3-Minute Demo Script
+
+The graph also offers **Fullscreen** and **Ask graph** controls in its upper-right corner. Ask graph supports local Ollama models and hosted OpenAI, Anthropic and Gemini models with a request-scoped API-key field. This selection is independent of the incident agents. See [Graph questions](docs/GRAPH_QUESTIONS.md) for setup. A real provider is required for answers, even when the incident demo uses deterministic mode.
+
+For a tool/recovery-focused demonstration, enable **Test recovery** before injection and use **Agent activity → Tools** plus **Run evidence** in the header. The extra-cost limit defaults to €6,000; a €3,000 limit blocks the default revised plan before human approval. See [judging alignment](docs/JUDGING_ALIGNMENT.md) for the updated walkthrough and explicit model-mode boundaries.
 
 1. **0:00–0:25 — Healthy network.** Open the dashboard; point out 8 suppliers, 12 components, 5 products, 10 orders, and the current model/memory mode. Click a supplier to inspect properties and relationships. Close the inspector.
 2. **0:25–0:45 — Inject.** Click **Inject Tariff Event**. Explain that this is a SIMULATED 25% Chinese semiconductor tariff, announced October 26 and effective November 15, 2026. The policy node connects country and HS code.
@@ -178,15 +185,15 @@ The API server runs the sync daily at `TARIFF_CRAWL_TIME` (`TARIFF_CRAWL=off` di
 
 ## LangSmith
 
-Set these in `.env`, then restart the backend:
+See [LangSmith setup](docs/LANGSMITH_SETUP.md) for live OpenAI configuration, regional endpoints, trace navigation and repeatable evaluations. The current tracing-only setup records Commander/model/task/tool spans and a **Process evaluations** span with objective checks. Open **Run evidence** for the trace ID and results. Approval resume has a separate trace correlated by `demo_run`.
 
-```dotenv
-LANGSMITH_TRACING=true
-LANGSMITH_API_KEY=your_key
-LANGSMITH_PROJECT=supplychain-copilot
+The local evaluation suite needs no cloud permissions:
+
+```bash
+uv run python -m backend.langsmith_evals
 ```
 
-The header links the investigation trace when tracing is enabled. Deep Agents and LangChain emit model, task and tool spans; deterministic Python traversals and simulations are decorated with `traceable`. Metadata includes incident ID, run/thread ID, simulation marker and model mode. Approval resume is a separate traced invocation using the same checkpoint thread; correlate it by `demo_run` metadata. Tracing is optional and cannot be demonstrated online without the user’s credentials. Do not set tracing on for the fully offline rehearsal.
+Feedback scores and LangSmith Experiments require broader permissions and remain disabled with a tracing-only key. `--upload` explicitly enables an actual Experiment; `--mode live` explicitly uses OpenAI. Normal unit tests use deterministic models and disable tracing regardless of developer `.env` credentials.
 
 ## Validation
 

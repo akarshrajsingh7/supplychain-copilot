@@ -4,8 +4,8 @@ import logging
 from contextlib import asynccontextmanager
 from typing import Literal
 
-from fastapi import FastAPI, HTTPException, Request
-from fastapi.responses import StreamingResponse
+from fastapi import FastAPI, Header, HTTPException, Request
+from fastapi.responses import JSONResponse, StreamingResponse
 from langgraph.checkpoint.sqlite.aio import AsyncSqliteSaver
 from pydantic import BaseModel
 
@@ -14,6 +14,11 @@ from backend.engine import IncidentEngine
 from backend.graph.graphiti_client import TemporalMemory
 from backend.api.tariffs import router as tariffs_router
 from backend.tariffs.scheduler import daily_crawl_loop
+from backend.models.questions import GraphAnswer, GraphQuestion
+from backend.models.runs import RunPolicy
+from backend.evaluation import evaluate_run
+from backend.observability import public_settings, publish_feedback
+from backend.qa import QuestionError, answer_graph_question, question_provider_catalog
 
 logging.basicConfig(level=logging.INFO)
 logging.getLogger("neo4j.notifications").setLevel(logging.WARNING)
@@ -44,15 +49,57 @@ app = FastAPI(title="SupplyChain Copilot", lifespan=lifespan)
 app.include_router(tariffs_router)
 
 
+@app.get("/api/qa/models")
+async def question_models():
+    return await question_provider_catalog()
+
+
+@app.post("/api/qa/ask", response_model=GraphAnswer)
+async def ask_graph(body: GraphQuestion, request: Request,
+                    api_key: str | None = Header(default=None, alias="X-LLM-API-Key")):
+    try:
+        answer = await answer_graph_question(request.app.state.engine, body, api_key)
+        return answer
+    except QuestionError as exc:
+        raise HTTPException(exc.status, exc.message) from None
+
+
 @app.get("/api/health")
 def health(request: Request):
     e = request.app.state.engine
     return {"ok": True, "agent_mode": e.mode, "memory_mode": e.memory.mode, "graphiti_connected": e.memory.client is not None}
 
 
+@app.get("/api/observability")
+def observability(request: Request):
+    engine = request.app.state.engine
+    return {"langsmith": public_settings(), "agent_mode": engine.mode,
+            "model_routing": engine.model_router.describe(),
+            "trace_id": engine.state.get("trace_id"), "feedback": engine.state.get("langsmith", {}).get("feedback")}
+
+
 @app.get("/api/state")
 def state(request: Request):
     return request.app.state.engine.snapshot()
+
+
+@app.get("/api/evaluation")
+async def run_evaluation(request: Request, download: bool = False):
+    task = request.app.state.task
+    report = await evaluate_run(request.app.state.engine, running=bool(task and not task.done()))
+    headers = {"Content-Disposition": f'attachment; filename="supplychain-run-{report["run"]["id"]}.json"'} if download else {}
+    return JSONResponse(report, headers=headers)
+
+
+@app.post("/api/evaluation/publish")
+async def publish_evaluation(request: Request):
+    engine = request.app.state.engine
+    task = request.app.state.task
+    report = await evaluate_run(engine, running=bool(task and not task.done()))
+    result = await publish_feedback(engine, report)
+    engine.state["langsmith"]["feedback"] = result
+    engine.save()
+    return result
 
 
 @app.get("/api/graph")
@@ -69,10 +116,10 @@ async def memory(request: Request, subject: str | None = None, as_of: str | None
 
 
 @app.post("/api/incidents")
-async def inject(request: Request):
+async def inject(request: Request, options: RunPolicy | None = None):
     engine = request.app.state.engine
     try:
-        await engine.inject()
+        await engine.inject(options)
         request.app.state.task = asyncio.create_task(engine.run())
         return engine.snapshot()
     except ValueError as exc:

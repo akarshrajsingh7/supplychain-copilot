@@ -1,18 +1,68 @@
 import { useEffect, useRef, useState } from 'react';
 import cytoscape from 'cytoscape';
 import type { Core, StylesheetJson } from 'cytoscape';
-import { Maximize, Minus, Plus, Search } from 'lucide-react';
+import { Expand, Maximize, MessageCircleQuestion, Minimize, Minus, Plus, Search } from 'lucide-react';
 import type { Entity, Graph } from '../types';
+import { GraphQuestions } from './GraphQuestions';
 
 const category:Record<string,string>={Country:'#7a89a6',Supplier:'#689aff',Component:'#bea2ff',Product:'#55d6c2',Plant:'#68c9d5',Warehouse:'#9da9b8',Port:'#8da6bb',Order:'#c1b38e',Customer:'#acbdc9',Policy:'#ff8569',Mitigation:'#83e8b5',HSCode:'#9d95b5',Capacity:'#748599',Route:'#748599'};
 const risks:Record<string,string>={healthy:'#526779',affected:'#f3ac5d',critical:'#fb7777',alternative:'#7cafff',mitigated:'#71dfb0'};
 const columns:Record<string,number>={Policy:0,Country:0,HSCode:1,Supplier:2,Capacity:2,Port:1,Route:0,Component:3,Warehouse:3,Product:4,Plant:4,Order:5,Customer:6,Mitigation:1};
 
-export function KnowledgeGraph({graph,onSelect,selected,focus}:{graph:Graph;onSelect:(n:Entity)=>void;selected:string|null;focus:string}){
+export function KnowledgeGraph({graph,onSelect,selected,focus,view='current'}:{graph:Graph;onSelect:(n:Entity)=>void;selected:string|null;focus:string;view?:'before'|'current'}){
   const container=useRef<HTMLDivElement>(null), cy=useRef<Core|null>(null);
+  const stage=useRef<HTMLDivElement>(null), fullscreenButton=useRef<HTMLButtonElement>(null);
   const selectRef=useRef(onSelect); selectRef.current=onSelect;
   const graphRef=useRef(graph); graphRef.current=graph;
   const [search,setSearch]=useState('');
+  const [fullscreen,setFullscreen]=useState(false);
+  const [questionsOpen,setQuestionsOpen]=useState(false);
+
+  async function toggleFullscreen(){
+    if(fullscreen){
+      if(document.fullscreenElement===stage.current)await document.exitFullscreen();
+      else setFullscreen(false);
+      return;
+    }
+    if(stage.current?.requestFullscreen&&document.fullscreenEnabled){
+      try{
+        await stage.current.requestFullscreen();
+        return;
+      }catch{
+        // Embedded views may block native fullscreen; expand within the viewport.
+      }
+    }
+    setFullscreen(true);
+  }
+
+  useEffect(()=>{
+    function onFullscreenChange(){
+      const active=document.fullscreenElement===stage.current;
+      setFullscreen(active);
+      if(!active)fullscreenButton.current?.focus({preventScroll:true});
+    }
+    function onEscape(event:KeyboardEvent){
+      if(event.key==='Escape'&&fullscreen){
+        if(document.fullscreenElement===stage.current){
+          void document.exitFullscreen().catch(()=>setFullscreen(document.fullscreenElement===stage.current));
+        }else setFullscreen(false);
+        fullscreenButton.current?.focus({preventScroll:true});
+      }
+    }
+    document.addEventListener('fullscreenchange',onFullscreenChange);
+    document.addEventListener('keydown',onEscape);
+    return()=>{
+      document.removeEventListener('fullscreenchange',onFullscreenChange);
+      document.removeEventListener('keydown',onEscape);
+    };
+  },[fullscreen]);
+
+  useEffect(()=>{
+    if(!fullscreen)return;
+    const previous=document.body.style.overflow;
+    document.body.style.overflow='hidden';
+    return()=>{document.body.style.overflow=previous;};
+  },[fullscreen]);
   useEffect(()=>{
     if(!container.current)return;
     const instance=cytoscape({container:container.current,style:[
@@ -65,5 +115,5 @@ export function KnowledgeGraph({graph,onSelect,selected,focus}:{graph:Graph;onSe
     else if(focus==='impact'){instance.nodes().filter(n=>n.data('risk')==='healthy').addClass('dim');}
     instance.nodes().unselect();if(selected)instance.getElementById(selected).select();
   },[search,focus,selected,graph]);
-  return <div className="graph-stage"><div className="graph-search"><Search size={14}/><input value={search} onChange={e=>setSearch(e.target.value)} placeholder="Find an entity…" aria-label="Search graph"/><kbd>⌕</kbd></div><div className="column-labels"><span>ORIGIN & POLICY</span><span>SUPPLIERS</span><span>COMPONENTS</span><span>PRODUCTION</span><span>ORDERS & CUSTOMERS</span></div><div className="cy-container" ref={container}/><div className="graph-controls"><button aria-label="Zoom in" onClick={()=>cy.current?.zoom(cy.current.zoom()*1.2)}><Plus size={15}/></button><button aria-label="Zoom out" onClick={()=>cy.current?.zoom(cy.current.zoom()/1.2)}><Minus size={15}/></button><button aria-label="Fit graph" onClick={()=>cy.current?.fit(undefined,38)}><Maximize size={15}/></button></div><div className="graph-legend">{Object.entries(risks).map(([name,color])=><span key={name}><i style={{background:color}}/>{name}</span>)}</div><div className="graph-caption">{graph.nodes.length} entities <span>·</span> {graph.edges.length} relationships <span>·</span> click a node to inspect</div></div>;
+  return <div className={`graph-stage${fullscreen?' graph-fullscreen':''}`} ref={stage}><div className="graph-search"><Search size={14}/><input value={search} onChange={e=>setSearch(e.target.value)} placeholder="Find an entity…" aria-label="Search graph"/><kbd>⌕</kbd></div><div className="graph-actions"><button className="graph-ask-button" aria-label="Ask the knowledge graph" aria-expanded={questionsOpen} onClick={()=>setQuestionsOpen(!questionsOpen)}><MessageCircleQuestion size={14}/><span>Ask graph</span></button><button ref={fullscreenButton} className="graph-fullscreen-button" aria-label={fullscreen?'Exit graph fullscreen':'Enter graph fullscreen'} aria-pressed={fullscreen} title={fullscreen?'Exit fullscreen (Esc)':'View graph fullscreen'} onClick={toggleFullscreen}>{fullscreen?<Minimize size={14}/>:<Expand size={14}/>}<span>{fullscreen?'Exit fullscreen':'Fullscreen'}</span></button></div>{questionsOpen&&<GraphQuestions view={view} selectedEntity={selected&&graph.nodes.some(n=>n.id===selected)?selected:null} onSelectEntity={id=>{const entity=graph.nodes.find(n=>n.id===id);if(entity)onSelect(entity);}} onClose={()=>{setQuestionsOpen(false);stage.current?.querySelector<HTMLButtonElement>('.graph-ask-button')?.focus();}}/>}<div className="column-labels"><span>ORIGIN & POLICY</span><span>SUPPLIERS</span><span>COMPONENTS</span><span>PRODUCTION</span><span>ORDERS & CUSTOMERS</span></div><div className="cy-container" ref={container}/><div className="graph-controls"><button aria-label="Zoom in" onClick={()=>cy.current?.zoom(cy.current.zoom()*1.2)}><Plus size={15}/></button><button aria-label="Zoom out" onClick={()=>cy.current?.zoom(cy.current.zoom()/1.2)}><Minus size={15}/></button><button aria-label="Fit graph" onClick={()=>cy.current?.fit(undefined,38)}><Maximize size={15}/></button></div><div className="graph-legend">{Object.entries(risks).map(([name,color])=><span key={name}><i style={{background:color}}/>{name}</span>)}</div><div className="graph-caption">{graph.nodes.length} entities <span>·</span> {graph.edges.length} relationships <span>·</span> click a node to inspect</div></div>;
 }

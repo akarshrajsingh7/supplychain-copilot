@@ -23,6 +23,13 @@ async def test_api_and_durable_approval(tmp_path, monkeypatch):
             assert (await client.post("/api/incidents")).status_code == 409
             await app.state.task
             assert engine.state["status"] == "AWAITING HUMAN APPROVAL"
+            evidence = await client.get("/api/evaluation?download=true")
+            assert evidence.status_code == 200
+            assert "attachment" in evidence.headers["content-disposition"]
+            report = evidence.json()
+            assert report["metrics"]["read_tool_attempts"] > 0
+            assert report["checkpoint"]["pending_interrupts"] == 1
+            assert report["summary"]["fail"] == 0
             # Reconstruct the engine against the same SQLite checkpoint, as after a server restart.
             restored = IncidentEngine(memory, saver, state_path=tmp_path / "incident.json")
             app.state.engine = restored

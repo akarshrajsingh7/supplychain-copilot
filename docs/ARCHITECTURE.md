@@ -4,6 +4,12 @@ SupplyChain Copilot turns a simulated policy event into a traced investigation, 
 
 [Data guide](DATA_GUIDE.md) · [LangChain stack](LANGCHAIN_STACK.md) · [Setup and demo](../README.md)
 
+The graph now also has a separate read-only question path: dashboard → `/api/qa/ask` → graph/calculation/evidence snapshot → selected model → answer with checked source IDs. It supports local Ollama and hosted OpenAI, Anthropic and Gemini. This path has no memory-write or approval tools and is excluded from LangSmith tracing. See [Graph questions](GRAPH_QUESTIONS.md) for its flow diagram and credential handling.
+
+The incident read-tool path now records actual inputs/outputs and durations, retries supported transient read failures once, and enforces a read-attempt cap. Per-run sourcing-cost policy gates approval; shared specialist operations are serialized. `/api/evaluation` exports objective process evidence and checkpoint metadata. These checks do not score model intelligence or predict hackathon judging. See [judging alignment](JUDGING_ALIGNMENT.md).
+
+Live agents now use per-invocation LangChain routing middleware: routine roles use the cheaper model; planner/critic use a thinking model; sourcing escalates after critic rejection. The Models tab and Run evidence show actual call records, latency and reported token usage. See [model routing](MODEL_ROUTING.md).
+
 ## 1. Overall architecture
 
 The Mermaid diagram below is editable text. A standalone [SVG diagram](architecture.svg) is also available for presentations and Markdown viewers without Mermaid support.
@@ -15,7 +21,7 @@ flowchart TB
   API[FastAPI<br/>REST endpoints and SSE snapshots]
   Engine[IncidentEngine<br/>State, evidence events and graph projections]
   Commander[Deep Agents Commander<br/>Planning and task delegation]
-  Model[Model selection<br/>Scripted offline model OR ChatOpenAI]
+  Model[LangChain model routing<br/>Scripted offline OR routine/thinking ChatOpenAI]
   Specialists[Six specialist subagents<br/>Policy, Impact, Inventory, Sourcing, Planner, Critic]
   Tools[Controlled Python supply tools<br/>Traversal, costs, shortfall and constraints]
   Curator[Graph Curator<br/>Validate facts and gate decisions]
@@ -57,6 +63,7 @@ The two memory modes are alternatives for business-memory retrieval. The SQLite 
 | --- | --- | --- |
 | Dashboard | Inject the fixture event, visualize activity/graph, inspect evidence, approve/reject | [`frontend/src/main.tsx`](../frontend/src/main.tsx), [`components/`](../frontend/src/components/) |
 | API | Serve state, graph and temporal memory; start investigation; resume approval; stream snapshots | [`backend/api/main.py`](../backend/api/main.py) |
+| Graph questions | Build read-only graph/evidence context, invoke the selected provider, return answer/source records | [`backend/qa.py`](../backend/qa.py), [`GraphQuestions.tsx`](../frontend/src/components/GraphQuestions.tsx) |
 | Incident engine | Coordinate tool operations, record evidence, emit events and maintain risk overlays | [`backend/engine.py`](../backend/engine.py) |
 | Commander | Plan with `write_todos`, delegate via `task`, request approval | [`backend/agents/commander.py`](../backend/agents/commander.py) |
 | Offline model | Emit deterministic tool calls through the actual agent runtime | [`deterministic_model.py`](../backend/agents/deterministic_model.py) |
@@ -159,11 +166,14 @@ Reset creates a new incident/thread and clears the visible overlay; it does not 
 | Endpoint | Purpose |
 | --- | --- |
 | `GET /api/health` | Backend health and active model/memory modes |
+| `GET /api/qa/models` | Question-panel providers and model presets |
+| `POST /api/qa/ask` | Read-only graph Q&A; hosted key supplied in `X-LLM-API-Key` header |
 | `GET /api/state` | Current incident snapshot |
+| `GET /api/evaluation` | Evidence-based run checks and tool records; `download=true` returns a JSON attachment |
 | `GET /api/graph?view=before\|current` | Supply graph plus the chosen projection |
 | `GET /api/memory?subject=A&as_of=...` | Current or historical evidence |
 | `GET /api/events` | SSE stream of complete incident snapshots; includes reconnect snapshot and heartbeats |
-| `POST /api/incidents` | Inject the configured fixture event; no custom-event request model exists yet |
+| `POST /api/incidents` | Inject the fixture with optional `simulate_tool_failure`, `max_incremental_cost_eur` and `max_tool_attempts`; custom tariff scope/rate is not accepted |
 | `POST /api/decision` | Resume with `{"decision":"APPROVE"}` or `{"decision":"REJECT"}` |
 | `POST /api/reset` | Start a fresh healthy visible state when investigation is not running |
 
