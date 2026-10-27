@@ -169,6 +169,11 @@ The deterministic demo script does not call these tools, so the rehearsal is unc
 uv run python -m backend.tariffs.scheduler --once --chapters 85 99   # quick load for the demo
 uv run python -m backend.tariffs.scheduler --once                    # full schedule
 ```
+The dashboard's **US tariff data** panel, below the knowledge graph, shows the last sync, the number
+of lines tracked, the next scheduled run, live progress during a sync, and the latest schedule
+changes. It also has **Quick sync (Ch. 85 & 99)** and **Full sync** buttons. These are backed by
+`GET /api/tariffs/status`, `GET /api/tariffs/changes` and `POST /api/tariffs/sync`.
+
 The API server runs the sync daily at `TARIFF_CRAWL_TIME` (`TARIFF_CRAWL=off` disables it; see `.env.example`).
 
 ## LangSmith

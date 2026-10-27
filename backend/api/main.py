@@ -12,6 +12,7 @@ from pydantic import BaseModel
 from backend.config import MEMORY_MODE, RUNTIME
 from backend.engine import IncidentEngine
 from backend.graph.graphiti_client import TemporalMemory
+from backend.api.tariffs import router as tariffs_router
 from backend.tariffs.scheduler import daily_crawl_loop
 
 logging.basicConfig(level=logging.INFO)
@@ -40,6 +41,7 @@ async def lifespan(app: FastAPI):
 
 
 app = FastAPI(title="SupplyChain Copilot", lifespan=lifespan)
+app.include_router(tariffs_router)
 
 
 @app.get("/api/health")

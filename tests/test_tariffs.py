@@ -103,3 +103,30 @@ def test_next_run_is_within_a_day(monkeypatch):
     tz = ZoneInfo("America/New_York")
     assert seconds_until_next_run(datetime(2026, 10, 27, 5, 0, tzinfo=tz)) == 3600
     assert seconds_until_next_run(datetime(2026, 10, 27, 7, 0, tzinfo=tz)) == 23 * 3600
+
+
+async def test_dashboard_endpoints(db, monkeypatch):
+    from httpx import ASGITransport, AsyncClient
+    from backend.api.main import app
+    from backend.tariffs import scheduler
+
+    real = crawler.run_crawl
+    monkeypatch.setattr(scheduler, "run_crawl",
+                        lambda chapters=None, on_progress=None: real(db, chapters=[74, 85], client=FakeClient(DAY1), on_progress=on_progress))
+    async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as client:
+        s = (await client.get("/api/tariffs/status")).json()
+        assert s["last_run"] is None and s["total_lines"] == 0 and not s["running"]
+        assert (await client.post("/api/tariffs/sync", json={"chapters": [77]})).status_code == 422
+        r = await client.post("/api/tariffs/sync", json={"chapters": [74, 85]})
+        assert r.status_code == 200 and r.json()["running"]
+        assert (await client.post("/api/tariffs/sync")).status_code == 409  # one at a time
+        await scheduler.controller.wait()
+        s = (await client.get("/api/tariffs/status")).json()
+        assert s["last_run"]["status"] == "success" and s["total_lines"] == 5 and s["chapters_loaded"] == 2
+
+        day2 = copy.deepcopy(DAY1); day2[85][1]["general"] = "25%"
+        real(db, chapters=[74, 85], client=FakeClient(day2))
+        ch = (await client.get("/api/tariffs/changes?days=1")).json()["changes"]
+        assert ch[0]["htsno"] == "8507.60.00" and ch[0]["new_value"] == "25%"
+        assert ch[0]["description"] == "Lithium-ion batteries"
+        assert (await client.get("/api/tariffs/status")).json()["changes_7d"] == 1

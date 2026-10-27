@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import logging
 import time
-from typing import Any
+from typing import Any, Callable
 
 from backend.tariffs.hts_client import CHAPTERS, HTSClient
 from backend.tariffs.store import TariffStore, default_db_path, normalize
@@ -23,13 +23,18 @@ def run_crawl(
     db_path: str | None = None,
     chapters: list[int] | None = None,
     client: HTSClient | None = None,
+    on_progress: Callable[[int, int, int], None] | None = None,
 ) -> dict[str, Any]:
+    """on_progress(chapter, chapters_done, chapters_total) is called after each chapter."""
     store = TariffStore(db_path or default_db_path())
     client = client or HTSClient()
     run_id = store.start_run()
     totals = {"lines_seen": 0, "added": 0, "removed": 0, "modified": 0, "failed_chapters": []}
     try:
-        for ch in chapters or CHAPTERS:
+        todo = chapters or CHAPTERS
+        for i, ch in enumerate(todo, 1):
+            if on_progress:
+                on_progress(ch, i - 1, len(todo))
             try:
                 raw = client.export_chapter(ch)
             except Exception as exc:  # one bad chapter shouldn't kill the run
@@ -50,6 +55,8 @@ def run_crawl(
             log.info("Chapter %02d: %s", ch, stats)
             time.sleep(getattr(client, "delay", 0))  # be polite to a public gov service
 
+        if on_progress:
+            on_progress(todo[-1], len(todo), len(todo))
         status = "partial" if totals["failed_chapters"] else "success"
         if totals["lines_seen"] == 0:
             status = "failed"
